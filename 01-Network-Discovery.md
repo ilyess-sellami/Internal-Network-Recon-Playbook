@@ -115,5 +115,33 @@ cat /etc/resolv.conf
 Example:
 
 ```text
+nameserver 10.10.10.10
+nameserver 10.10.10.11
+```
 
+DNS servers are frequently Domain Controllers.
+
+---
+
+## Step 6 - Host Discovery Across Large Networks
+
+For medium/large enterprises:
+
+```bash
+fping -a -g 10.10.0.0/16 2>/dev/null
+```
+
+or
+
+```bash
+masscan 10.10.0.0/16 --rate 5000
+```
+
+Document findings by subnet:
+
+```bash
+10.10.1.0/24
+10.10.2.0/24
+10.10.20.0/24
+10.10.50.0/24
 ```
