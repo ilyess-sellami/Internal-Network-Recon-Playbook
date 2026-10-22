@@ -33,10 +33,6 @@ Example:
 445/tcp   open microsoft-ds
 ```
 
-### Why
-
-Common scans may miss services running on non-standard ports.
-
 ---
 
 ## Step 2 - Service Version Detection
@@ -77,12 +73,16 @@ Identify SMB-enabled systems.
 nmap -Pn -p445 10.10.10.0/24
 ```
 
----
-
 ### Enumerate Shares
 
 ```bash
 smbclient -L //10.10.10.20 -N
+```
+
+or
+
+```bash
+smbmap -H 10.10.10.20
 ```
 
 Example:
@@ -93,41 +93,6 @@ C$
 NETLOGON
 SYSVOL
 Shared
-```
-
----
-
-### Enumerate Available Shares
-
-```bash
-smbmap -H 10.10.10.20
-```
-
----
-
-### Enumerate SMB Details
-
-```bash
-nmap --script smb-os-discovery -p445 10.10.10.20
-```
-
-Potential findings:
-
-```text
-Hostname
-Domain Name
-OS Version
-SMB Signing Status
-```
-
-### High-Value Findings
-
-```text
-NETLOGON
-SYSVOL
-Backup Shares
-IT Shares
-Admin Shares
 ```
 
 ---
@@ -149,8 +114,6 @@ Example:
 636/tcp open ldaps
 ```
 
----
-
 ### Query Naming Contexts
 
 ```bash
@@ -163,22 +126,6 @@ Potential findings:
 defaultNamingContext
 rootDomainNamingContext
 dnsHostName
-```
-
----
-
-### Extract Domain Information
-
-```bash
-ldapsearch -x -H ldap://10.10.10.10 -b "" -s base
-```
-
-### High-Value Findings
-
-```text
-Domain Names
-Domain Controllers
-Organizational Units
 ```
 
 ---
@@ -199,27 +146,6 @@ Example:
 88/tcp open kerberos-sec
 ```
 
-### Why
-
-A host exposing Kerberos is often:
-
-```text
-Domain Controller
-Authentication Server
-```
-
-### Reporting Notes
-
-```text
-10.10.10.10
-
-Kerberos
-LDAP
-DNS
-
-Likely Domain Controller
-```
-
 ---
 
 ## Step 6 - DNS Enumeration
@@ -234,24 +160,6 @@ nmap -Pn -p53 10.10.10.0/24
 
 ```bash
 host dc01.company.local 10.10.10.10
-```
-
----
-
-### Reverse Lookup
-
-```bash
-host 10.10.10.10 10.10.10.10
-```
-
-### Typical Findings
-
-```text
-dc01
-dc02
-fileserver
-backup
-sql01
 ```
 
 ---
@@ -274,31 +182,6 @@ Example:
 
 ---
 
-### Enumerate Supported Algorithms
-
-```bash
-nmap --script ssh2-enum-algos -p22 10.10.10.25
-```
-
----
-
-### Retrieve SSH Information
-
-```bash
-ssh-keyscan 10.10.10.25
-```
-
-Potential findings:
-
-```text
-Linux Servers
-Network Appliances
-Jump Hosts
-Monitoring Servers
-```
-
----
-
 ## Step 8 - HTTP / HTTPS Enumeration
 
 Discover web applications and management consoles.
@@ -308,8 +191,6 @@ Discover web applications and management consoles.
 ```bash
 nmap -Pn -p80,443,8080,8443 10.10.10.0/24
 ```
-
----
 
 ### Retrieve HTTP Headers
 
@@ -322,8 +203,6 @@ Example:
 ```text
 Server: nginx
 ```
-
----
 
 ### Enumerate Web Technologies
 
@@ -340,16 +219,6 @@ IIS
 Tomcat
 Jenkins
 GitLab
-```
-
-### High-Value Targets
-
-```text
-Virtualization Dashboards
-Backup Platforms
-Monitoring Platforms
-CI/CD Servers
-Admin Portals
 ```
 
 ---
@@ -370,16 +239,6 @@ Example:
 3389/tcp open ms-wbt-server
 ```
 
-### Why
-
-Typically indicates:
-
-```text
-Windows Server
-Administrative Workstation
-Jump Host
-```
-
 ---
 
 ## Step 10 - WinRM Enumeration
@@ -396,13 +255,6 @@ Example:
 
 ```text
 5985/tcp open wsman
-```
-
-Common systems:
-
-```text
-Windows Servers
-Management Systems
 ```
 
 ---
@@ -427,14 +279,6 @@ nmap -Pn -p5432 10.10.10.0/24
 
 ```bash
 nmap -Pn -p3306 10.10.10.0/24
-```
-
-Potential findings:
-
-```text
-Database Clusters
-Application Backends
-Reporting Servers
 ```
 
 ---
